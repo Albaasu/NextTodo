@@ -86,6 +86,7 @@ const Todo = () => {
         <Link color={'blue.400'} href='/TodoList'>
           TodoList
         </Link>
+        <p>{user?.email}</p>
       </Box>
     </>
   );
