@@ -2,8 +2,6 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
 import { Button } from '@chakra-ui/react';
-import { collection, getDocs, where, query } from 'firebase/firestore';
-import { get } from 'http';
 import { getAuth, onIdTokenChanged } from 'firebase/auth';
 
 const TodoList = () => {
@@ -31,12 +29,11 @@ const TodoList = () => {
     });
     return unsubscribe;
   }, []);
-  
+
   return (
     <>
       <div>TodoList</div>
       <div>{user?.email}</div>
-      
 
       <Button onClick={handleLogout}>ログアウト</Button>
     </>
