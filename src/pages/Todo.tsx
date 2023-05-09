@@ -1,4 +1,9 @@
-import { signOut } from 'firebase/auth';
+import {
+  getAuth,
+  onAuthStateChanged,
+  onIdTokenChanged,
+  signOut,
+} from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
 import {
@@ -18,15 +23,23 @@ import { LinkIcon } from '@chakra-ui/icons';
 
 const Todo = () => {
   const user = auth.currentUser;
+  const [loginState, setLoginState] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
-    const unSub = auth.onAuthStateChanged((user) => {
+    const unSub = onAuthStateChanged(auth, (user) => {
       !user && router.push('/Login');
     });
     return () => unSub();
   }, [router]);
+
+  useEffect(() => {
+    const unsubscribe = onIdTokenChanged(auth, (user) => {
+      setLoginState(user);
+    });
+    return unsubscribe;
+  }, []);
 
   //ログアウト処理
   const handleLogout = async () => {
