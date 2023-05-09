@@ -1,9 +1,20 @@
 import { signOut } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
-import { Box, Button, Flex, Input, List, Textarea } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  LinkBox,
+  List,
+  Textarea,
+  Link,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { addDoc, collection } from 'firebase/firestore';
+
+import { LinkIcon } from '@chakra-ui/icons';
 
 const Todo = () => {
   const user = auth.currentUser;
@@ -41,6 +52,8 @@ const Todo = () => {
       detail: todoDetail,
       isDone: false,
     });
+    setTodoDetail('');
+    setTodotitle('');
   };
 
   return (
@@ -70,6 +83,9 @@ const Todo = () => {
           </Button>
         </Flex>
         <Button onClick={handleLogout}>ログアウト</Button>
+        <Link color={'blue.400'} href='/TodoList'>
+          TodoList
+        </Link>
       </Box>
     </>
   );
