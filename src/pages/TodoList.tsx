@@ -2,15 +2,15 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
 import { Button } from '@chakra-ui/react';
-import { getAuth, onIdTokenChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
-import { log } from 'console';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const TodoList = () => {
   const router = useRouter();
-  const user = auth.currentUser;
-  const [loginState, setLoginState] = useState(false);
-
+  const [loginState, setLoginState] = useState<any>(null);
+  const [todoList, setTodoList] = useState<any>([]);
+  const [user] = useAuthState(auth);
   //ログアウト処理
   const handleLogout = async () => {
     await auth.signOut();
@@ -24,19 +24,10 @@ const TodoList = () => {
     return () => unSub();
   }, [router]);
 
-  const [loginUser, setLoginUser] = useState<any>(null);
-
-  //firebaseからログイン状態を取得
-  useEffect(() => {
-    const unsubscribe = onIdTokenChanged(auth, (user) => {
-      setLoginState(loginUser);
-    });
-    return unsubscribe;
-  }, []);
-
-  const [todoList, setTodoList] = useState<any>([]);
   //データベースからデータを取得
-  const getTodo = async () => {
+  const getTodo = async (user: any) => {
+    //データ取得これまじで大事
+    if (!user) return;
     const todoRef = collection(db, 'users', user!.uid, 'todos');
     const snapshot = await getDocs(todoRef);
     const listTodo = snapshot.docs.map((doc) => doc.data());
@@ -44,8 +35,8 @@ const TodoList = () => {
   };
 
   useEffect(() => {
-    getTodo();
-  }, []);
+    getTodo(user!);
+  }, [user]);
 
   return (
     <>
