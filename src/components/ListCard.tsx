@@ -5,6 +5,7 @@ import {
   CardBody,
   CardFooter,
   Divider,
+  Flex,
   Heading,
   Stack,
   Text,
@@ -37,12 +38,12 @@ export const ListCard = () => {
 
   return (
     <> 
-    
+    <Flex mt="4" justify="center" align="flex-start" wrap="wrap" >
     {todoList.map((todo: any) => (
-      <Card key={todo.id} maxW="sm">
+      <Card key={todo.id} maxW="sm" mr={2} minW={300}>
         <CardBody>
-          <Stack mt="6" spacing="3">
-            <Heading size="md">{todo.title}</Heading>
+          <Stack mt="6" spacing="3" >
+            <Heading size="md" >{todo.title}</Heading>
             <Text>{todo.description}</Text>
           </Stack>
         </CardBody>
@@ -59,6 +60,7 @@ export const ListCard = () => {
         </CardFooter>
       </Card>
     ))}
+    </Flex>
     </>
     );
 };
