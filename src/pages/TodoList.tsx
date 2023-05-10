@@ -5,6 +5,7 @@ import { Button } from '@chakra-ui/react';
 import { getAuth, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { ListCard } from '@/components/ListCard';
 
 const TodoList = () => {
   const router = useRouter();
@@ -42,14 +43,10 @@ const TodoList = () => {
     <>
       <div>TodoList</div>
       <div>{user?.email}</div>
-      <div>
-        {todoList.map((todo: any) => (
-          <div key={todo.id}>
-            <div>{todo.title}</div>
-            <div>{todo.detail}</div>
-          </div>
-        ))}
-      </div>
+    
+        <ListCard/>
+
+    
 
       <Button onClick={handleLogout}>ログアウト</Button>
     </>
