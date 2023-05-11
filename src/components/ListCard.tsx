@@ -28,6 +28,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  updateDoc,
 } from 'firebase/firestore';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -43,6 +44,9 @@ export const ListCard = () => {
   const initialRef = React.useRef(null);
   const router = useRouter();
   const [selectedTodoId, setSelectedTodoId] = useState<any>(null);
+  const [todoTitle, setTodoTitle] = useState('');
+  const [todoDetail, setTodoDetail] = useState('');
+  const { id } = router.query;
 
   //データベースからデータを取得
   const getTodo = async (user: any) => {
@@ -58,19 +62,28 @@ export const ListCard = () => {
     getTodo(user!);
   }, [user]);
 
- // Todoの削除
- const deleteTodo = async (id:any) => {
-  const todoRef = doc(db, 'users', user!.uid, 'todos', id);
-  await deleteDoc(todoRef);
-  onClose();
-  getTodo(user);
-};
+  // Todoの削除
+  const deleteTodo = async (id: any) => {
+    const todoRef = doc(db, 'users', user!.uid, 'todos', id);
+    await deleteDoc(todoRef);
+    onClose();
+    getTodo(user);
+  };
 
-const handleDeleteClick = (id:any) => {
-  setSelectedTodoId(id);
-  onOpen();
-};
+  const handleDeleteClick = (id: any) => {
+    setSelectedTodoId(id);
+    onOpen();
+  };
 
+  //Todoの編集へ遷移
+  const pushTodoEdit = (id: any) => {
+    router.push(`/Edit/?id=${id}`);
+  };
+
+  // Todoの追加へ遷移
+  const pushTodoAdd = () => {
+    router.push('/Todo');
+  };
 
   return (
     <>
@@ -108,13 +121,21 @@ const handleDeleteClick = (id:any) => {
             <Divider />
             <CardFooter>
               <ButtonGroup spacing='2'>
-                <Button variant='solid' colorScheme='pink'>
+                <Button
+                  variant='solid'
+                  colorScheme='pink'
+                  onClick={() => pushTodoEdit(todo.id)}
+                >
                   編集
                 </Button>
                 <Button variant='solid' colorScheme='blue'>
                   完了
                 </Button>
-                <Button variant='solid' colorScheme='red' onClick={()=>handleDeleteClick(todo.id)}>
+                <Button
+                  variant='solid'
+                  colorScheme='red'
+                  onClick={() => handleDeleteClick(todo.id)}
+                >
                   削除
                 </Button>
               </ButtonGroup>
@@ -129,7 +150,11 @@ const handleDeleteClick = (id:any) => {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <ModalFooter>
-              <Button colorScheme='red' mr={3} onClick={()=>deleteTodo(selectedTodoId)}>
+              <Button
+                colorScheme='red'
+                mr={3}
+                onClick={() => deleteTodo(selectedTodoId)}
+              >
                 はい
               </Button>
               <Button onClick={onClose}>いいえ</Button>
@@ -137,7 +162,7 @@ const handleDeleteClick = (id:any) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <Link href='/Todo'>Todoを追加</Link>
+      <Button onClick={pushTodoAdd}>Todoを追加</Button>
     </>
   );
 };
